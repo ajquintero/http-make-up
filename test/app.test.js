@@ -75,7 +75,15 @@ describe('colors', () => {
   });
 
   it('deletes a color', () => {
-
+    return createColor('red', '#FF0000', 'rgb(255, 0, 0)')
+      .then(color => {
+        return request(app)
+          .delete(`/colors/${color._id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({ deleted: 1 });
+      });
   });
-
 });
+
+
