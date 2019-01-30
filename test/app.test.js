@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const request = require('supertest');
@@ -51,6 +52,30 @@ describe('colors', () => {
       .then(res => {
         expect(res.body).toHaveLength(1);
       });
+  });
+
+  it('returns a color by id', () => {
+    return createColor('red', '#FF0000', 'rgb(255, 0, 0)')
+      .then(color => {
+        return Promise.all([
+          Promise.resolve(color._id),
+          request(app)
+            .get(`/colors/${color._id}`)
+        ]);
+      })
+      .then(([_id, res]) => {
+        expect(res.body).toEqual({
+          name: 'red',
+          hex: '#FF0000',
+          rgb: 'rgb(255, 0, 0)',
+          __v: 0,
+          _id: expect.any(String)
+        });
+      });
+  });
+
+  it('deletes a color', () => {
+
   });
 
 });
