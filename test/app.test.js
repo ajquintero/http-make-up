@@ -1,19 +1,56 @@
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
-const Colors = require('../lib/models/Colors');
+const request = require('supertest');
+const app = require('../lib/app');
 
-describe('Colors', () => {
-  let colors = null;
+describe('colors', () => {
+  const createColor = (name, hex, rgb, _id) => {
+    return request(app)
+      .post('/colors')
+      .send({ name, hex, rgb, _id })
+      .then(res => res.body);
+  };
 
   beforeEach(done => {
-    rimraf('./testData/color', err => {
+    rimraf('./data/tweets', err => {
       done(err);
     });
   });
 
   beforeEach(done => {
-    mkdirp('./testData/color', err => {
+    mkdirp('./data/tweets', err => {
       done(err);
     });
   });
+
+  it('can create a new color', () => {
+    return request(app)
+      .post('/colors')
+      .send({
+        name: 'red',
+        hex: '#FF0000',
+        rgb: 'rgb(255, 0, 0)'
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          name: 'red',
+          hex: '#FF0000',
+          rgb: 'rgb(255, 0, 0)',
+          __v: 0,
+          _id: expect.any(String)
+        });
+      });
+  });
+
+  it('gets a list of colors', () => {
+    return Promise.all(['red', '#FF0000', 'rgb(255, 0, 0)'].map(createColor))
+      .then(() => {
+        return request(app)
+          .get('/colors');
+      })
+      .then(res => {
+        expect(res.body).toHaveLength(1);
+      });
+  });
+
 });

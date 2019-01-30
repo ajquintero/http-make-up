@@ -26,9 +26,11 @@
   "devDependencies": {
     "eslint": "^5.12.1",
     "jest": "^24.0.0",
+    "morgan": "^1.9.1",
     "supertest": "^3.4.2"
   },
   "dependencies": {
+    "express": "^4.16.4",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.18.9",
     "rimraf": "^2.6.3",
